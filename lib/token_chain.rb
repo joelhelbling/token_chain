@@ -12,7 +12,7 @@ module TokenChain
     end
 
     def from_anchor anchor_code, last_code=nil
-      Generator.new anchor_code last_code
+      Generator.new anchor_code, last_code
     end
 
   end
