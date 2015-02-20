@@ -4,12 +4,12 @@ module TokenChain
   class ReceivableToken < Squares::Base
     property :anchor
     property :sequence, default: 0
-    property :used_at
+    property :status, default: :available # also, :consumed
 
     alias_method :token, :id
 
-    def spent?
-      ! used_at.nil?
+    def available?
+      status == :available
     end
   end
 end
