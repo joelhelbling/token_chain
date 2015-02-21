@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'token_chain/anchor'
 require 'token_chain/generator'
-require 'token_chain/model_receivable_token'
+require 'token_chain/receivable_token'
 require 'token_chain/receiver'
 
 module TokenChain
