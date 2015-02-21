@@ -78,6 +78,19 @@ module TokenChain
           end
         end
 
+        describe 'working repeatedly through a whole bunch of iterations' do
+          Given { receiver.initialize_chain anchor }
+          Given(:client_generator) { Generator.new anchor }
+          Then do
+            (0..50).map do
+              skipping_to = 1 + rand(10)
+              token = [client_generator.generate(skipping_to)].flatten.last
+              receiver.validate!(token)[:result] == 'success' && ReceivableToken.keys.count <= 20
+            end.all? { |result| result == true }
+          end
+
+        end
+
       end
 
     end #validate!
