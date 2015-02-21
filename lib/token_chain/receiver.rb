@@ -12,18 +12,15 @@ module TokenChain
       end
     end
 
-    def valid?(token)
-      if rt = ReceivableToken.find(token)
-        rt.available?
-      else
-        false
-      end
-    end
-
     def validate!(token)
-      if valid?(token)
+      receivable = ReceivableToken.find(token)
+
+      if receivable.nil?
+        raise UnknownTokenError.new("Invalid token")
+      elsif ! receivable.available?
+        raise InvalidTokenError.new("Token was previously submitted")
+      else # it's a valid, available token
         response = { result: 'success' }
-        receivable = ReceivableToken.find(token)
 
         anchor = receivable.anchor
         incoming_token_seq = receivable.sequence
@@ -32,14 +29,17 @@ module TokenChain
           response[:warning] = 'Token submitted out of sequence.'
         end
 
+        # resequence and prune
         ReceivableToken.where(anchor: anchor).each do |rt|
           old_sequence = rt.sequence
           new_sequence = old_sequence - (incoming_token_seq + 1)
           rt.sequence = new_sequence
-          if new_sequence < 0
-            rt.status = :consumed
+          if rt.sequence >= -10
+            rt.status = :consumed if new_sequence < 0
+            rt.save
+          else
+            rt.delete
           end
-          rt.save
         end
 
         # replentish tokens
@@ -50,16 +50,13 @@ module TokenChain
             sequence: sequence
         end
 
-        # purge old consumed tokens (keep 10)
-
         return response
-      else
-        raise UnknownTokenError.new("Invalid token") unless valid?(token)
       end
     end
 
   end
 
   class UnknownTokenError < ArgumentError; end
+  class InvalidTokenError < ArgumentError; end
 end
 
