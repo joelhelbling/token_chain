@@ -39,7 +39,6 @@ module TokenChain
           new_sequence = old_sequence - (incoming_token_seq + 1)
           rt.sequence = new_sequence
           if rt.sequence >= -10
-            rt.status = :consumed if new_sequence < 0
             rt.save
           else
             rt.delete
