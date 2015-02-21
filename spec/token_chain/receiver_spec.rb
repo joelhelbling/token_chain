@@ -8,9 +8,8 @@ module TokenChain
   describe Receiver do
     Given(:anchor) { Anchor.from 'the rain in spain' }
     Given(:generator) { Generator.new anchor }
-    Given(:receiver) { Receiver.new }
     Given(:store) { {} }
-    Given { ReceivableToken.store = store }
+    Given(:receiver) { Receiver.new datastore: store }
 
     describe '#initialize_chain' do
       When { receiver.initialize_chain anchor }
