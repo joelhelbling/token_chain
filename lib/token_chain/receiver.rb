@@ -5,10 +5,6 @@ require 'token_chain/receivable_token'
 module TokenChain
   class Receiver
 
-    def initialize(datastore: {})
-      ReceivableToken.store = datastore
-    end
-
     def initialize_chain(anchor)
       @generator = Generator.new anchor
       @generator.generate(10).each_with_index do |token, i|

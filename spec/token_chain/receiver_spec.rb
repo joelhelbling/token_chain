@@ -6,14 +6,15 @@ require 'token_chain/receiver'
 
 module TokenChain
   describe Receiver do
+    Given { ReceivableToken.store = {} }
     Given(:anchor) { Anchor.from 'the rain in spain' }
     Given(:generator) { Generator.new anchor }
     Given(:store) { {} }
-    Given(:receiver) { Receiver.new datastore: store }
+    Given(:receiver) { Receiver.new }
 
     describe '#initialize_chain' do
       When { receiver.initialize_chain anchor }
-      Then { expect(store.keys.count).to eq(10) }
+      Then { expect(ReceivableToken.keys.count).to eq(10) }
       Then { expect(ReceivableToken.map{|t| t.sequence}).to eq((0..9).to_a) }
       Then { expect(ReceivableToken[generator.generate(5).last]).to_not be_nil }
     end
@@ -85,7 +86,8 @@ module TokenChain
             (0..50).map do
               skipping_to = 1 + rand(10)
               token = [client_generator.generate(skipping_to)].flatten.last
-              receiver.validate!(token)[:result] == 'success' && ReceivableToken.keys.count <= 20
+              response = receiver.validate!(token)
+              response[:result] == 'success' && ReceivableToken.keys.count <= 20
             end.all? { |result| result == true }
           end
 
