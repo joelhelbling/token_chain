@@ -46,10 +46,10 @@ module TokenChain
           describe 'response' do
             context 'when skipping ahead' do
               Then { expect(response[:result]).to eq('success') }
-              Then { expect(response[:warning]).to eq('Token submitted out of sequence.') }
+              Then { expect(response[:warning]).to match(/out of sequence/) }
             end
             context 'when submitting a previously validated token' do
-              Then { expect{receiver.validate!(token)}.to raise_error("Token was previously submitted") }
+              Then { expect{receiver.validate!(token)}.to raise_error(/previously submitted/) }
             end
           end
           describe 'receivable tokens' do
