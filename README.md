@@ -30,14 +30,14 @@ chain.anchor_code #=> anchor code for this chain, useful for restarting w/out pa
 Provided you have a chain's anchor code, you can also "restart" a chain without the passphrase:
 
 ```ruby
-chain = TokenChain.from_anchor [anchor code]
+chain = TokenChain.from_anchor anchor_code
 chain.generate #=> [first token]
 ```
 
 You can even jumpstart the chain to generate from a previously generated token:
 
 ```ruby
-chain = TokenChain.from_anchor [anchor code], [second code]
+chain = TokenChain.from_anchor anchor_code, second_code
 chain.generate #=> [third code]
 ```
 
